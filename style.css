@@ -1,0 +1,77 @@
+body {
+	background-color: rgb(240,240,240);
+}
+.header  {
+	background-color: rgb(186,197,169);
+	background-image: url("canaan.valley.logo.jpg");
+	background-repeat: no-repeat;
+	background-position: 10% 50%;
+	height: 103px;
+}
+.header h1 {
+	color:rgb(8,99,154);
+	float: right;
+	font-size: 60px;
+}
+.tabs {
+	text-transform: uppercase;
+}
+.scoreCalculator {
+	background-color: rgb(186,197,169);
+
+}
+.scoreCalculator .container .calculator {
+	text-align: center;
+	font-size: 36px;
+	width: 80px;
+}
+.scoreCalculator .container td {
+	text-align: center;
+	padding: 10px;
+}
+.scoreDisplay {
+	background-color: black;
+	padding: 10px;
+}
+.scoreDisplay .container td {
+	text-align: center;
+}
+.scoreDisplay .container .display {
+	width: 200px;
+	font-size: 50px;
+	color: white;
+}
+.scoreDisplay .container .displayNum {
+	width: 210px;
+	font-size: 120px;
+	text-align: center;
+	background-color: black;
+	color: white;
+}
+.rules {
+
+}
+.callawayChart table {
+	border: 1px solid black;
+	border-spacing: 3px;
+	border-collapse: separate;
+}
+.callawayChart td {
+	padding: 3px;
+	text-align: center;
+	color: white;
+	font-weight: bold;
+}
+.callawayChart .black {
+	background-color: black;
+}
+.callawayChart .blue {
+	background-color: #0000AF;
+}
+.callawayChart .red {
+	background-color: #AF3FAF;
+}
+.footer {
+	text-align: center;
+	padding-top: 20px;
+}
