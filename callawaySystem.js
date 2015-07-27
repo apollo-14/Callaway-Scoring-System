@@ -1,23 +1,24 @@
 // worst holes id's (textboxes)
 var worstHolesArray = 
-['theWorst'
-,'secondWorst'
-,'thirdWorst'
-,'fourthWorst'
-,'fifthWorst'
-,'sixthWorst' 
+    ['theWorst'
+    ,'secondWorst'
+    ,'thirdWorst'
+    ,'fourthWorst'
+    ,'fifthWorst'
+    ,'sixthWorst' 
 ];
 // worst holes labels ()
 var worstHolesLabelArray = 
-['worstLabel'
-,'secondLabel'
-,'thirdLabel'
-,'fourthLabel'
-,'fifthLabel'
-,'sixthLabel' 
+    ['worstLabel'
+    ,'secondLabel'
+    ,'thirdLabel'
+    ,'fourthLabel'
+    ,'fifthLabel'
+    ,'sixthLabel' 
 ];
 
 var gross = "grossScore";
+var player = "playerName";
 var grossDisp = "grossDisplay";
 var hcapDisp = "hcapDisplay";
 var netDisp = "netDisplay";
@@ -36,6 +37,7 @@ function calculateScore(anAdjustment) {
         document.getElementById(grossDisp).value = grossScore;
         document.getElementById(hcapDisp).value = handicap;
         document.getElementById(netDisp).value = grossScore - handicap;
+
     }
 }
 
@@ -130,10 +132,10 @@ function displayWorstHoles(num) {
     setFocus(num);
 }
 
-function setFocus(hole) {
-    if(hole == 0) {
-        document.getElementById(gross).focus();
-        document.getElementById(gross).select();
+function setFocus(holes) {
+    if(holes == 0) {
+        document.getElementById(player).focus();
+        document.getElementById(player).select();
     }
     else {
         document.getElementById(worstHolesArray[0]).focus();
@@ -141,15 +143,14 @@ function setFocus(hole) {
     }
 }
 
-function reset() {
+function clear() {
     // set up page to calculate score
     document.getElementById(gross).value = "XX";
+    document.getElementById(player).value = "player name";
     // clear and remove worst holes text boxes
     displayWorstHoles(0);
     // clear display text boxes
     document.getElementById(grossDisp).value = "";
-    document.getElementById(grossDisp).disabled = "disabled";
     document.getElementById(hcapDisp).value = "";
-    document.getElementById(hcapDisp).disabled = "disabled";
     document.getElementById(netDisp).value = "";
 }
