@@ -7,13 +7,11 @@
 </head> <!-- end head-->
 
 <body onload="clear()">
+
 <!-- include jquery and bootstrap -->
 <script src="bootstrap/js/jquery.js"></script>
 <script src="bootstrap/js/bootstrap.min.js"></script>
 <script src="callawaySystem.js"></script>
-
-
-
 
 
 
@@ -26,30 +24,23 @@
 <!-- End Page-Header -->
 
 
-<!--<?php
-    
-    /*$username = root;
-    $password = root;
-    
-    try {
-    // Create database connection using PHP Data Object (PDO)
-    $db = new PDO("mysql:host=localhost; dbname=db01", $username, $password);
-    // Identify name of table within database
-    $playersTable = 't_country_names2';
-    // Create the query - here we grab everything from the table
-    $players = $db->query('SELECT * FROM ' . $playersTable . ';');
-    // Close connection to database
-    $db = NULL;
+<!--
+<?php/*    
+    try { 
+        $db = new PDO("mysql:host=localhost; dbname=db01", 'root', 'root');
+        $players = $db->query('SELECT * FROM ' . $playersTable . ';');
+        $db = NULL;
 
-    while ($rows = $players->fetch())
-            {echo "<p>"  . $rows['r_english_name'] . "</p>";
-        };
-    }
-
+        while ($rows = $players->fetch())
+                {echo "<p>"  . $rows['r_english_name'] . "</p>";
+            };
+        }
     catch (PDOException $e) {    print "Error!: " . $e->getMessage() . "<br/>";
         die();
     }*/
-?>-->
+?>
+-->
+
 
 
 <!-- Tabs -->
@@ -78,25 +69,29 @@
         <div class="container">
         <table>
         <tr>
-        <td>
-            <label id="tourneyName">Tournament:   </label>
+        <td><p>Insert new Round <input type="checkbox" id="insert_new_round" name="insert_new_round" /></p></td>
+        <td><p>Tournament : 
 <?php try {
     $db = new PDO("mysql:host=localhost; dbname=canaan", 'root', 'root'); 
     $tourneys = $db->query('SELECT * FROM tournaments');
     $db = NULL;
 
-        echo "<select>";
+        echo "<select id='newRound_select' name='newRound_select'>";
         while ($options = $tourneys->fetch())
         {   
-            echo "<option value='".$options['name']."'>".$options['name']."</option>";
+            echo "<option value='".$options['tournament_id']."'>".$options['name']."</option>";
         };  
         echo "</select>";
-}   catch (PDOException $e) {    
+}   catch (PDOException $e) { 
         print "Error!: " . $e->getMessage();
         die();
-}?>  
+}?>         
+
+            <a href="new_tournament.php">
+                <span class="glyphicon glyphicon-plus" aria-hidden="false"></span>
+            </a>
+            </p>
         </td>
-        <td></td>
         <td></td>
         </tr>
 
@@ -106,20 +101,20 @@
         <td rowspan="2">
             <table class="worstHoles">
             <tr>
-            <td><label id="worstLabel">Worst Hole</label></td>
-            <td><label id="secondLabel">2<sup>nd</sup> Worst</label></td>
-            <td><label id="thirdLabel">3<sup>rd</sup> Worst</label></td>
-            <td><label id="fourthLabel">4<sup>th</sup> Worst</label></td>
-            <td><label id="fifthLabel">5<sup>th</sup> Worst</label></td>
-            <td><label id="sixthLabel">6<sup>th</sup> Worst</label></td>
+            <td><label id="wl_1">Worst Hole</label></td>
+            <td><label id="wl_2">2<sup>nd</sup> Worst</label></td>
+            <td><label id="wl_3">3<sup>rd</sup> Worst</label></td>
+            <td><label id="wl_4">4<sup>th</sup> Worst</label></td>
+            <td><label id="wl_5">5<sup>th</sup> Worst</label></td>
+            <td><label id="wl_6">6<sup>th</sup> Worst</label></td>
             </tr>
             <tr>
-            <td><input type="text" id="theWorst" class="calculator"></td>
-            <td><input type="text" id="secondWorst" class="calculator"></td>
-            <td><input type="text" id="thirdWorst" class="calculator"></td>
-            <td><input type="text" id="fourthWorst" class="calculator"></td>
-            <td><input type="text" id="fifthWorst" class="calculator"></td>
-            <td><input type="text" id="sixthWorst" class="calculator"></td>
+            <td><input type="text" id="wh_1" class="calculator"></td>
+            <td><input type="text" id="wh_2" class="calculator"></td>
+            <td><input type="text" id="wh_3" class="calculator"></td>
+            <td><input type="text" id="wh_4" class="calculator"></td>
+            <td><input type="text" id="wh_5" class="calculator"></td>
+            <td><input type="text" id="wh_6" class="calculator"></td>
             </tr>
             </table>
         </td>
@@ -132,9 +127,9 @@
         </tr>
         
         <tr>
-        <td>Save New ?  : <input type="checkbox" id="newRound" name="newRound" /></td>
+        <td></td>
         <td><input type="button" id="calculate" value="Calculate Score" onclick="calculateScore(true)"></td>
-        <td><input type="submit" action="submit" id="save" name="save" value="Save Round"></td>
+        <td><input type="submit" action="submit" id="new_round" name="new_round" value="Save Round"></td>
         </tr>
         
         </table>
@@ -187,51 +182,60 @@
             
             <div class="col-xs-8">
 
-<?php try {
-    
+<?php 
+try 
+{
+    $db = new PDO("mysql:host=localhost; dbname=canaan", 'root', 'root'); 
+    $tourneys = $db->query('SELECT * 
+                            FROM tournaments
+                            ORDER BY start_date DESC;');
+    $db = NULL;
+
+    while ($ts = $tourneys->fetch()) {
         $db = new PDO("mysql:host=localhost; dbname=canaan", 'root', 'root'); 
-        $rounds = $db->query('SELECT x.player_name player_name,
-                                     x.final_score final_score,
-                                     x.gross_score gross_score,
-                                     x.handicap handicap,
-                                     t.name 
-                                FROM tmp x, tournaments t
-                                WHERE x.tournament_id = t.tournament_id
-                                order by final_score asc, 
-                                         gross_score asc,
-                                         handicap asc;');
+        $t_id = $ts['tournament_id'];
+        $rounds = $db->query('SELECT player_name player_name,
+                                     final_score final_score,
+                                     gross_score gross_score,
+                                     handicap handicap
+                                FROM tmp
+                               WHERE tournament_id = '.$t_id.'
+                            ORDER BY final_score, gross_score, handicap;');
         $db = NULL;
 
-        echo "<label>".$trnys['name']."</label>\n";
-        echo "<table class=\"table table-striped\">\n<tr>\n";
-        echo     "<th>#</th>".
+        echo "<h2>".$ts['name']."</h2>";
+        echo "<table class=\"table table-striped\">".
+             "<tr>".
+                 "<th>#</th>".
                  "<th>Player Name</th>".
                  "<th>Final Score</th>".
                  "<th>Gross</th>".
                  "<th>Handicap</th>".
-                 "<th>Tournament<th>";
-        echo "</tr><tr>";
+             "</tr>";
 
         $pos = 1;
         while ($rows = $rounds->fetch())
         {   
-            echo "<td>".$pos."</td>".
+            echo "<tr>".
+                 "<td>".$pos."</td>".
                  "<td>".$rows['player_name']."</td>".
                  "<td>".$rows['final_score']."</td>".
                  "<td>".$rows['gross_score']."</td>".
                  "<td>".$rows['handicap']."</td>".
-                 "<td>".$rows['name']."</td></tr>";
+                 "</tr>";
             $pos = $pos + 1;
         };  
-        echo "</tr></table>";    
+
+        echo "</table>";  
+    };  
 
 } 
 catch (PDOException $e) {    
     print "Error!: " . $e->getMessage() . "<br/>";
     die();
-}?>
+} 
+?>
 
-        
                 </div>
             <div class="col-xs-2"> </div>
         </div>
@@ -411,20 +415,20 @@ catch (PDOException $e) {
 
 
 
-
-
 <!-- Footer -->
 <div class="footer">
 <div class="row">
 <div class="col-xs-12">
 <div class="panel panel-default">
 <h3>Thanks everyone for another great year.</h3>
-<h4>Special thanks to: Randy Richards, Craig Richards, Ray Swartz</h4>
 </div>
 </div>
 </div>
 </div> 
 <!-- End Footer -->
+
+
+
 
 
 
