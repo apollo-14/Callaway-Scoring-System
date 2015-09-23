@@ -10,47 +10,63 @@
 <!-- include jquery and bootstrap -->
 <script src="bootstrap/js/jquery.js"></script>
 <script src="bootstrap/js/bootstrap.min.js"></script>
-<script src="callawaySystem.js"></script>
-  	
-<center>
-<div class="col-xs-2">
-</div>
+<script src="new_tournament.js"></script>
+
+<div class="col-xs-2"></div>
 
 <div class="col-xs-8">
 
-<!-- form for new tournament -->
+<div class="panel panel-default">
 
-<p>Enter info for new Tournament</p>
-<form action="controller.php" method="get" id="values">
+<div class="panel-heading">
+
+	<h2>Create a new Tournament</h2>
+	<a href="index.php"><span class="glyphicon glyphicon-remove" aria-hidden="false"></span></a>
+	
+</div>
+
+<form action="controller.php" method="post" id="values">
+
 <table class="table">
-<tr>
-<th>Tournament Name</th>
-<th>Start Date</th>
-<th>End Date</th>
-<th>attr1</th>
-<th>attr2</th>
-<th></th>
-</tr>
+	<tr>
+		<th></th>
+		<th>Tournament Name</th>
+		<th>Start Date</th>
+		<th>Number Of Rounds</th>
+	</tr>
 
-<tr>
-<td><input type="text" name="new_t_name" id="new_t_name" placeholder="(Name)" ></td>
-<td><input type="date" name="new_t_start_date" id="new_t_start_date" placeholder="Start date" ></td>
-<td></td>
-<td></td>
-<td></td>
-<td>
-	<button type="submit" name="create_new_tournament" id="submit">
-		<span class="glyphicon glyphicon-floppy-save" aria-hidden="false"></span>
-	</button>
-</td>
+	<tr>
+		<td><center>
+			<button type="submit" name="create_new_tournament" id="submit">
+				<span class="glyphicon glyphicon-floppy-save" aria-hidden="false"></span>
+			</button></center>
+		</td>
+		<td>
+			<input type="text" name="t_name" id="t_name" placeholder="(name)" >
+		</td>
+		<td>
+			<input type="date" name="t_start_date" id="t_start_date" placeholder="Start date" >
+		</td>
+		<td>
+			<select name="t_num_rounds" id="t_num_rounds" placeholder="-">
+				<option value="1">1</option>
+				<option value="2">2</option>
+				<option value="3">3</option>
+				<option value="4">4</option>
+			</select>
+		</td>
+	</tr>
+</table>
 
 </form>
+
 </div>
 
-<div class="col-xs-2">
 </div>
-</center>
 
-  </body>
+<div class="col-xs-2"></div>
+
+</body>
+
 </html>
 

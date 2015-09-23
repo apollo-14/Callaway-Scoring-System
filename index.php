@@ -13,35 +13,13 @@
 <script src="bootstrap/js/bootstrap.min.js"></script>
 <script src="callawaySystem.js"></script>
 
-
-
 <!-- Page Header -->
 <div class="header"> 
 <div class="container">
-<h1>The Cranny Open 2014 <small>43<sup>rd</sup> year</small></h1>
+<h1>The Cranny Open 2015 <small>43<sup>rd</sup> year</small></h1>
 </div>
 </div> 
 <!-- End Page-Header -->
-
-
-<!--
-<?php/*    
-    try { 
-        $db = new PDO("mysql:host=localhost; dbname=db01", 'root', 'root');
-        $players = $db->query('SELECT * FROM ' . $playersTable . ';');
-        $db = NULL;
-
-        while ($rows = $players->fetch())
-                {echo "<p>"  . $rows['r_english_name'] . "</p>";
-            };
-        }
-    catch (PDOException $e) {    print "Error!: " . $e->getMessage() . "<br/>";
-        die();
-    }*/
-?>
--->
-
-
 
 <!-- Tabs -->
 <div class="container tabs">
@@ -53,14 +31,12 @@
 </div>
 <!-- End Tabs -->
 
-
-
 <!-- Tab Content -->
 <div class="tab-content">
 
     <!-- Calculators Tab -->
     <div class="tab-pane active" id="calculators">
-        <form action="controller.php" method="get" id="values">
+        <form action="controller.php" method="post">
 
         <!-- Score Calculator -->
         <div class="row"> 
@@ -68,33 +44,7 @@
         <div class="scoreCalculator">
         <div class="container">
         <table>
-        <tr>
-        <td><p>Insert new Round <input type="checkbox" id="insert_new_round" name="insert_new_round" /></p></td>
-        <td><p>Tournament : 
-<?php try {
-    $db = new PDO("mysql:host=localhost; dbname=canaan", 'root', 'root'); 
-    $tourneys = $db->query('SELECT * FROM tournaments');
-    $db = NULL;
-
-        echo "<select id='newRound_select' name='newRound_select'>";
-        while ($options = $tourneys->fetch())
-        {   
-            echo "<option value='".$options['tournament_id']."'>".$options['name']."</option>";
-        };  
-        echo "</select>";
-}   catch (PDOException $e) { 
-        print "Error!: " . $e->getMessage();
-        die();
-}?>         
-
-            <a href="new_tournament.php">
-                <span class="glyphicon glyphicon-plus" aria-hidden="false"></span>
-            </a>
-            </p>
-        </td>
-        <td></td>
-        </tr>
-
+        
         <tr class="tableHeader">
         <td><label id="playerHeader">Player name</label></td>
         <td><label id="grossHeader">Gross Score</label></td>
@@ -127,11 +77,49 @@
         </tr>
         
         <tr>
-        <td></td>
+        <td><p>Save Mode : <input type="checkbox" id="admin_mode" name="admin_mode" /></p></td>
         <td><input type="button" id="calculate" value="Calculate Score" onclick="calculateScore(true)"></td>
         <td><input type="submit" action="submit" id="new_round" name="new_round" value="Save Round"></td>
         </tr>
+        <tr>
+        <td>Tournament : 
+<?php 
+try {
+    
+    $db = new PDO("mysql:host=localhost; dbname=canaan", 'root', 'root'); 
+    $tourneys = $db->query('SELECT * FROM tournaments');
+    $db = NULL;
+
+    echo "<select id='tournament_select' name='tournament_select'>";
+    
+    while ($options = $tourneys->fetch()) {   
         
+        echo "<option value='".$options['tournament_id']."'>".$options['name']."</option>";
+    
+    };  
+    
+    echo "</select>";
+}   
+
+catch (PDOException $e) { 
+    print "Error!: " . $e->getMessage();
+    die();
+
+}
+?>         
+
+            <a href="new_tournament.php">
+                <span class="glyphicon glyphicon-plus" aria-hidden="false"></span>
+            </a>
+        </td>
+        <td>Round : 
+            <select name="round_select">
+                <option value="2">2</option>
+            </select>
+        </td>
+        <td></td>
+        </tr>
+
         </table>
         </div>
         </div>
@@ -178,66 +166,156 @@
     <div class="tab-pane rules" id="leaderboard">
         <div class="container">
         <div class="row">
-            <div class="col-xs-2"></div>
-            
-            <div class="col-xs-8">
 
-<?php 
-try 
-{
-    $db = new PDO("mysql:host=localhost; dbname=canaan", 'root', 'root'); 
-    $tourneys = $db->query('SELECT * 
-                            FROM tournaments
-                            ORDER BY start_date DESC;');
-    $db = NULL;
+            <div class="col-xs-4">
+            <h2>The 43rd Cranny Open</h2>
+                <?php /*
+                try 
+                {   
+                    $db = new PDO("mysql:host=localhost; dbname=canaan", 'root', 'root'); 
+                    $players = $db->query('
+                                            select distinct(player_name) from tmp
+                                            where tournament_id = 4;
+                                          ');
+                    $db = NULL;
+                    $pos = 1;
 
-    while ($ts = $tourneys->fetch()) {
-        $db = new PDO("mysql:host=localhost; dbname=canaan", 'root', 'root'); 
-        $t_id = $ts['tournament_id'];
-        $rounds = $db->query('SELECT player_name player_name,
-                                     final_score final_score,
-                                     gross_score gross_score,
-                                     handicap handicap
-                                FROM tmp
-                               WHERE tournament_id = '.$t_id.'
-                            ORDER BY final_score, gross_score, handicap;');
-        $db = NULL;
+                    echo "<table class=\"table table-striped\">".
+                         "<tr>".
+                             "<th>#</th>".
+                             "<th>Player</th>".
+                             "<th>Gross</th>".
+                             "<th>H-cap</th>".
+                             "<th>Final</th>".
+                         "</tr>";
 
-        echo "<h2>".$ts['name']."</h2>";
-        echo "<table class=\"table table-striped\">".
-             "<tr>".
-                 "<th>#</th>".
-                 "<th>Player Name</th>".
-                 "<th>Final Score</th>".
-                 "<th>Gross</th>".
-                 "<th>Handicap</th>".
-             "</tr>";
+                    while ($d1 = $day1->fetch()) {
+                        
+                        echo "<tr>".
+                             "<td>".$pos."</td>".
+                             "<td>".$d1['player_name']."</td>".
+                             "<td>".$d1['gross_score']."</td>".
+                             "<td>".$d1['handicap']."</td>".
+                             "<td>".$d1['final_score']."</td>".
+                             "</tr>";
+                        
+                        $pos = $pos + 1;  
 
-        $pos = 1;
-        while ($rows = $rounds->fetch())
-        {   
-            echo "<tr>".
-                 "<td>".$pos."</td>".
-                 "<td>".$rows['player_name']."</td>".
-                 "<td>".$rows['final_score']."</td>".
-                 "<td>".$rows['gross_score']."</td>".
-                 "<td>".$rows['handicap']."</td>".
-                 "</tr>";
-            $pos = $pos + 1;
-        };  
+                    };  
 
-        echo "</table>";  
-    };  
+                    echo "</table>";  
+                } 
 
-} 
-catch (PDOException $e) {    
-    print "Error!: " . $e->getMessage() . "<br/>";
-    die();
-} 
-?>
+                catch (PDOException $e) {    
 
-                </div>
-            <div class="col-xs-2"> </div>
+                    print "Error!: " . $e->getMessage() . "<br/>";
+                    die();
+
+                } 
+                */
+                ?>
+            </div>
+
+            <div class="col-xs-4">
+                <h2>Day 1</h2>
+                <?php 
+                try 
+                {   
+                    $db = new PDO("mysql:host=localhost; dbname=canaan", 'root', 'root'); 
+                    $day1 = $db->query('SELECT * FROM tmp
+                                                WHERE tournament_id = 4
+                                                  AND round_id = 1
+                                             ORDER BY final_score, gross_score;');
+                    $db = NULL;
+                    $pos = 1;
+
+                    echo "<table class=\"table table-striped\">".
+                         "<tr>".
+                             "<th>#</th>".
+                             "<th>Player</th>".
+                             "<th>Gross</th>".
+                             "<th>H-cap</th>".
+                             "<th>Final</th>".
+                         "</tr>";
+
+                    while ($d1 = $day1->fetch()) {
+                        
+                        echo "<tr>".
+                             "<td>".$pos."</td>".
+                             "<td>".$d1['player_name']."</td>".
+                             "<td>".$d1['gross_score']."</td>".
+                             "<td>".$d1['handicap']."</td>".
+                             "<td>".$d1['final_score']."</td>".
+                             "</tr>";
+                        
+                        $pos = $pos + 1;  
+
+                    };  
+
+                    echo "</table>";  
+                } 
+
+                catch (PDOException $e) {    
+
+                    print "Error!: " . $e->getMessage() . "<br/>";
+                    die();
+
+                } 
+
+                ?>
+
+            </div>
+
+            <div class="col-xs-4">
+                <h2>Day 2</h2>
+                <?php 
+                try 
+                {   
+                    $db = new PDO("mysql:host=localhost; dbname=canaan", 'root', 'root'); 
+                    $day2 = $db->query('SELECT * FROM tmp
+                                                WHERE tournament_id = 4
+                                                  AND round_id = 2
+                                             ORDER BY final_score, gross_score;');
+                    $db = NULL;
+                    $pos = 1;
+
+                    echo "<table class=\"table table-striped\">".
+                         "<tr>".
+                             "<th>#</th>".
+                             "<th>Player</th>".
+                             "<th>Gross</th>".
+                             "<th>H-cap</th>".
+                             "<th>Final</th>".
+                         "</tr>";
+
+                    while ($d2 = $day2->fetch()) {
+                        
+                        echo "<tr>".
+                             "<td>".$pos."</td>".
+                             "<td>".$d2['player_name']."</td>".
+                             "<td>".$d2['gross_score']."</td>".
+                             "<td>".$d2['handicap']."</td>".
+                             "<td>".$d2['final_score']."</td>".
+                             "</tr>";
+                        
+                        $pos = $pos + 1;  
+
+                    };  
+
+                    echo "</table>";  
+                } 
+
+                catch (PDOException $e) {    
+
+                    print "Error!: " . $e->getMessage() . "<br/>";
+                    die();
+
+                } 
+
+                ?>
+
+            </div>
+
         </div>
         </div>
     </div>
@@ -417,13 +495,13 @@ catch (PDOException $e) {
 
 <!-- Footer -->
 <div class="footer">
-<div class="row">
-<div class="col-xs-12">
-<div class="panel panel-default">
-<h3>Thanks everyone for another great year.</h3>
-</div>
-</div>
-</div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <h3>Thanks everyone for another great year.</h3>
+            </div>
+        </div>
+    </div>
 </div> 
 <!-- End Footer -->
 
